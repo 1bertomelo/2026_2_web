@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Exemplo01.Validations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Exemplo01.Models
 {
@@ -16,5 +17,7 @@ namespace Exemplo01.Models
         public string Email { get; set; }
         [Required(ErrorMessage = "RA é obrigatório")]
         public string RA { get; set; }
+        [IdadeValidation(ErrorMessage = "Idade invalida")]
+        public int idade { get; set; }
     }
 }

@@ -59,10 +59,18 @@ namespace Exemplo01.Controllers
         [HttpPost]
         public IActionResult Cadastrar(Aluno aluno) 
         {
+            //verificar se RA ja existe na lista
+            //isto é uma regra de negocio
+            var resultado = ListaAlunos
+          .Where(a => a.RA == aluno.RA).FirstOrDefault();
 
-            ListaAlunos.Add(aluno);
-            //imagine que vou no gravar banco de dados
-            return Ok("Cadastrado com sucesso");
+            if (resultado is null)
+            {
+                ListaAlunos.Add(aluno);
+                return Ok("Cadastrado com sucesso");
+            }
+            return BadRequest("RA já cadastrado");
+
         }
 
         [HttpPut]

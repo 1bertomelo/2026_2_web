@@ -8,8 +8,7 @@ namespace Exemplo01.Controllers
     [Route("[controller]")]
     public class AlunoController : ControllerBase
     { 
-        private static List<Aluno> ListaAlunos = new List<Aluno>();
-
+      
         //sintaxe de uma funcao
         //visibilidade da funcao: public, private, protected
         //Tipo do retorno 
@@ -40,7 +39,7 @@ namespace Exemplo01.Controllers
         [Route("ListarAlunos")]
         public IActionResult ListarAlunos()
         {
-            return Ok(ListaAlunos);
+            return Ok();
         }
 
         [HttpGet]
@@ -66,7 +65,7 @@ namespace Exemplo01.Controllers
 
             if (resultado is null)
             {
-                ListaAlunos.Add(aluno);
+             
                 return Ok("Cadastrado com sucesso");
             }
             return BadRequest("RA já cadastrado");
@@ -84,8 +83,7 @@ namespace Exemplo01.Controllers
             if (resultado is null)
                 return NotFound("Ra informado não existe");
 
-            ListaAlunos.Remove(resultado);
-            ListaAlunos.Add(aluno);
+          
             return Ok("Dados atualizados com sucesso");
         }
 

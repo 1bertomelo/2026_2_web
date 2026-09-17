@@ -1,4 +1,5 @@
 ﻿using Exemplo01.Models;
+using Exemplo01.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 
@@ -8,13 +9,7 @@ namespace Exemplo01.Controllers
     [Route("[controller]")]
     public class AlunoController : ControllerBase
     { 
-      
-        //sintaxe de uma funcao
-        //visibilidade da funcao: public, private, protected
-        //Tipo do retorno 
-        //nome da funcao
-        //parametros
-        private static List<Aluno> alunos = new List<Aluno>();
+       private readonly IAlunoRepository _alunoRepository;
 
         #region Métodos GET
 
@@ -39,15 +34,19 @@ namespace Exemplo01.Controllers
         [Route("ListarAlunos")]
         public IActionResult ListarAlunos()
         {
-            return Ok();
+            return Ok(_alunoRepository.ObterTodos());
         }
 
         [HttpGet]
         [Route("obterPorRa")]
         public IActionResult obterporRa(string ra)
         {
-            var resultado = ListaAlunos.Where( a=> a.RA == ra);
-            if(resultado.Count() == 0)
+            //antes
+            //var resultado = ListaAlunos.Where(a => a.RA == ra).FirstOrDefault();
+            //Agora com repository
+            var resultado = _alunoRepository.ObterPorRa(ra);
+
+            if (resultado is null)
             {
                 return NotFound("Aluno não encontrado");
             }
@@ -58,14 +57,11 @@ namespace Exemplo01.Controllers
         [HttpPost]
         public IActionResult Cadastrar(Aluno aluno) 
         {
-            //verificar se RA ja existe na lista
-            //isto é uma regra de negocio
-            var resultado = ListaAlunos
-          .Where(a => a.RA == aluno.RA).FirstOrDefault();
+            var resultado = _alunoRepository.ObterPorRa(aluno.RA);
 
             if (resultado is null)
             {
-             
+                _alunoRepository.Cadastrar(aluno);
                 return Ok("Cadastrado com sucesso");
             }
             return BadRequest("RA já cadastrado");
@@ -77,12 +73,11 @@ namespace Exemplo01.Controllers
         public IActionResult Atualizar(Aluno aluno) 
         {
 
-            var resultado = ListaAlunos
-           .Where(a => a.RA == aluno.RA).FirstOrDefault();
+            var resultado = _alunoRepository.ObterPorRa(aluno.RA);
 
             if (resultado is null)
                 return NotFound("Ra informado não existe");
-
+            _alunoRepository.Atualizar(aluno);
           
             return Ok("Dados atualizados com sucesso");
         }
@@ -91,13 +86,12 @@ namespace Exemplo01.Controllers
         [Route("Remover/{ra}")]
         public IActionResult Remover(string ra)
         {
-            var resultado = ListaAlunos
-                .Where( a => a.RA == ra).FirstOrDefault();
+            var resultado = _alunoRepository.ObterPorRa(ra);
 
             if ( resultado is null)
                 return NotFound("Ra informado não existe");
 
-            ListaAlunos.Remove(resultado);           
+            _alunoRepository.Deletar(ra);          
             return Ok("Aluno removido com sucesso");
         }
 

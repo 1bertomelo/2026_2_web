@@ -10,6 +10,12 @@ namespace Exemplo01.Controllers
     public class AlunoController : ControllerBase
     { 
        private readonly IAlunoRepository _alunoRepository;
+        //Injecao de dependencia
+        //"Cria a instancia do repositório e injeta no controller"
+        public AlunoController(IAlunoRepository alunoRepository)
+        {
+                _alunoRepository = alunoRepository;
+        }
 
         #region Métodos GET
 
